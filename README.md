@@ -44,3 +44,88 @@ cs16-start
 ```
 
 ## Directory Structure
+cs16-iac/
+├── main.bicep              # Main infrastructure template
+├── parameters.json         # Deployment parameters
+├── cs16-setup.sh          # Server setup script
+├── deploy.ps1             # Deployment script
+├── destroy.ps1            # Cleanup script
+├── README.md              # This file
+└── cs16-configs/          # Server configuration
+├── server.cfg         # Server settings
+├── mapcycle.txt       # Map rotation
+├── motd.txt           # Message of the day
+├── maps/              # Custom maps
+│   ├── *.bsp          # Map files
+│   ├── *.txt          # Map descriptions
+│   ├── *.res          # Resource lists
+│   └── *.nav          # Bot navigation
+└── *.wad              # Texture files
+
+## Management Commands
+
+After SSH'ing into the server:
+```bash
+cs16-start              # Start the CS 1.6 server
+cs16-stop               # Stop the server
+cs16-restart            # Restart the server
+cs16-status             # Check if server is running
+cs16-console            # Access server console (Ctrl+A then D to exit)
+cs16-changemap italy    # Change map (auto-detects prefix)
+cs16-backup             # Create backup
+cs16-restore <file>     # Restore from backup
+cs16-update-configs     # Pull latest configs from GitHub
+```
+
+## Updating Configs
+
+1. Edit files in `cs16-configs/` locally
+2. Commit and push to GitHub:
+```bash
+   git add cs16-configs/
+   git commit -m "Updated server configs"
+   git push
+```
+3. SSH into server and run:
+```bash
+   cs16-update-configs
+   cs16-start
+```
+
+## Cost Estimate
+
+- VM (B1s): ~$7.59/month
+- Disk (30GB Standard HDD): ~$1.50/month
+- Storage (backups): ~$0.10/month
+- Network egress: ~$1-5/month (depending on traffic)
+
+**Total: ~$10-15/month**
+
+## Backup & Restore
+
+### Create Backup
+```bash
+cs16-backup
+```
+
+### List Backups
+```bash
+az storage blob list --account-name <STORAGE_ACCOUNT> --container-name server-backups --output table
+```
+
+### Restore Backup
+```bash
+cs16-restore cs16-backup-20260405.tar.gz
+cs16-start
+```
+
+## Cleanup
+
+To destroy all resources:
+```powershell
+.\destroy.ps1
+```
+
+## License
+
+MIT
