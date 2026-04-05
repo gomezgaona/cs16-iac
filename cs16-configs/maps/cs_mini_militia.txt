@@ -1,0 +1,12 @@
+global 
+{
+	ZOOM	4.32
+	ORIGIN	352	192	-467
+	ROTATED	0
+}
+
+layer 
+{
+	IMAGE	"overviews/cs_mini_militia.bmp"
+	HEIGHT	-467
+}

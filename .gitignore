@@ -1,0 +1,11 @@
+# Azure
+*.azurePubxml
+*.pubxml
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+
+# Local config overrides (if needed)
+local.parameters.json

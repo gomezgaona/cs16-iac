@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "adminUsername": {
+      "value": "cs-server"
+    },
+    "sshPublicKey": {
+      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXcMAvFmnlxHCT6I8LSVyIMASBWoZVr3NCONYEjl1kB jgome@jose-pc"
+    },
+    "vmSize": {
+      "value": "Standard_B1s"
+    },
+    "osDiskSizeGB": {
+      "value": 30
+    }
+  }
+}

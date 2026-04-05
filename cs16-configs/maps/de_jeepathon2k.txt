@@ -1,0 +1,14 @@
+Jeepathon2K by Jason Blum
+Created for CS Beta 7.0
+Released August 24, 2000
+
+Background:
+Ride the jeeps, plant the bomb, and
+save some hostages! This classic was
+originally created for CS Beta 7.0,
+but was removed for the official retail
+release of CS. Rescued from the archives,
+it's here to be enjoyed again by old and
+new players alike.
+
+(Press FIRE to continue)

@@ -1,0 +1,12 @@
+global 
+{
+	ZOOM	4.11
+	ORIGIN	368	192	-625
+	ROTATED	0
+}
+
+layer 
+{
+	IMAGE	"overviews/awp_minimilitia.bmp"
+	HEIGHT	-625
+}
