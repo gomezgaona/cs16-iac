@@ -19,7 +19,6 @@ var nicName = '${resourcePrefix}-nic'
 var vnetName = '${resourcePrefix}-vnet'
 var subnetName = 'default'
 var publicIPv4Name = '${resourcePrefix}-pip-ipv4'
-var publicIPv6Name = '${resourcePrefix}-pip-ipv6'
 var nsgName = '${resourcePrefix}-nsg'
 var storageAccountName = '${resourcePrefix}backups${uniqueString(resourceGroup().id)}'
 
@@ -72,7 +71,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
   }
 }
 
-// Virtual Network with IPv6
+// Virtual Network (IPv4)
 resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: vnetName
   location: location
@@ -80,17 +79,13 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     addressSpace: {
       addressPrefixes: [
         '10.0.0.0/16'
-        'ace:cab:deca::/48'
       ]
     }
     subnets: [
       {
         name: subnetName
         properties: {
-          addressPrefixes: [
-            '10.0.0.0/24'
-            'ace:cab:deca::/64'
-          ]
+          addressPrefix: '10.0.0.0/24'
           networkSecurityGroup: {
             id: nsg.id
           }
@@ -105,28 +100,15 @@ resource publicIPv4 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   name: publicIPv4Name
   location: location
   sku: {
-    name: 'Standard'
+    name: 'Basic'  // Changed from 'Standard'
   }
   properties: {
-    publicIPAllocationMethod: 'Static'
+    publicIPAllocationMethod: 'Dynamic'  // Changed from 'Static'
     publicIPAddressVersion: 'IPv4'
   }
 }
 
-// Public IP (IPv6)
-resource publicIPv6 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
-  name: publicIPv6Name
-  location: location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    publicIPAllocationMethod: 'Static'
-    publicIPAddressVersion: 'IPv6'
-  }
-}
-
-// Network Interface with dual-stack
+// Network Interface
 resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   name: nicName
   location: location
@@ -143,19 +125,6 @@ resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
             id: publicIPv4.id
           }
           primary: true
-        }
-      }
-      {
-        name: 'ipconfig-ipv6'
-        properties: {
-          subnet: {
-            id: vnet.properties.subnets[0].id
-          }
-          privateIPAllocationMethod: 'Dynamic'
-          privateIPAddressVersion: 'IPv6'
-          publicIPAddress: {
-            id: publicIPv6.id
-          }
         }
       }
     ]
@@ -238,6 +207,5 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
 
 
 output vmPublicIPv4 string = publicIPv4.properties.ipAddress
-output vmPublicIPv6 string = publicIPv6.properties.ipAddress
 output storageAccountName string = storageAccount.name
 output sshCommand string = 'ssh ${adminUsername}@${publicIPv4.properties.ipAddress}'

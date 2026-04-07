@@ -6,6 +6,7 @@
 *.log
 *.tmp
 *.bak
+*.tar.gz
 
 # Local config overrides
 local.parameters.json
@@ -22,3 +23,6 @@ Thumbs.db
 
 # VSCode
 .vscode/
+
+# Backups
+backup/

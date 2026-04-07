@@ -17,13 +17,47 @@ Automated provisioning of a Counter-Strike 1.6 dedicated server on Azure using B
 
 ## Cost Estimate
 
-| Resource | Monthly |
-|---|---|
-| VM (B1s) | ~$7.59 |
-| OS Disk (30 GB Standard HDD) | ~$1.50 |
-| Blob Storage (backups) | ~$0.10 |
-| Network egress | ~$1-5 |
-| **Total** | **~$10-15** |
+**Region:** South Central US (Texas)
+
+- VM (B1s): ~$7.59/month
+- Disk (30GB Standard HDD): ~$1.50/month
+- Storage (backups): ~$0.10/month
+- Network egress: ~$1-5/month
+- Dynamic IPv4: $0/month (while running)
+
+**Total: ~$9-11/month**
+
+**Previous cost with static IPs:** ~$16/month
+**Monthly savings:** ~$7/month ($84/year)
+
+**Note:** IP address may change if VM is stopped/deallocated. Use `az vm restart` instead of deallocate to preserve IP.
+
+## Latency Results
+
+Measured latency to South Central US (Texas) deployment:
+
+| Location | IPv4 Latency | IPv6 Latency | Notes |
+|----------|-------------|--------------|-------|
+| Durango, CO | 65ms | 185ms | IPv6 routes through Europe! |
+| Charlotte, NC | 30ms | N/A | Excellent for SE US |
+| Columbia, SC (est.) | 35-40ms | N/A | Great for players |
+
+**Recommendation:** Always use IPv4. IPv6 has poor peering/routing.
+
+## Important: Dynamic IP Behavior
+
+This deployment uses **dynamic public IPs** to save $7.20/month.
+
+**IP stays the same when:**
+- ✅ Rebooting from inside VM (`sudo reboot`)
+- ✅ Using `az vm restart`
+- ✅ Normal operation
+
+**IP changes when:**
+- ❌ Using `az vm stop` (deallocate) then `az vm start`
+- ❌ Stopping VM from Azure Portal
+
+**To preserve IP:** Always use restart, not stop/start.
 
 ## Prerequisites
 
@@ -39,8 +73,19 @@ cs16-iac/
 ├── parameters.json         # Deployment parameters
 ├── deploy.ps1              # PowerShell deployment script
 ├── destroy.ps1             # Cleanup / teardown script
-├── cs16-setup.sh           # Manual server setup script (run after deploy)
+├── cs16-setup.sh           # Complete server setup script
+├── STRUCTURE.md            # Detailed project structure
 ├── README.md               # This file
+├── cs16-scripts/           # Management scripts (backed up to GitHub)
+│   ├── cs16-start.sh
+│   ├── cs16-stop.sh
+│   ├── cs16-restart.sh
+│   ├── cs16-status.sh
+│   ├── cs16-console.sh
+│   ├── cs16-changemap.sh
+│   ├── cs16-backup.sh
+│   ├── cs16-restore.sh
+│   └── cs16-update-configs.sh
 └── cs16-configs/           # Server configuration files
     ├── server.cfg          # CS 1.6 server settings
     ├── mapcycle.txt        # Map rotation
@@ -72,33 +117,23 @@ Edit `parameters.json` and replace the `sshPublicKey` value with your own public
 .\deploy.ps1 -ResourceGroupName "cs16-server-rg" -Location "southcentralus"
 ```
 
-The script creates a resource group, provisions the VM, storage account, VNet, NSG, and dual-stack public IPs. It takes about 5-10 minutes.
+The script creates a resource group, provisions the VM, storage account, VNet, NSG, and public IP. It takes about 5-10 minutes.
 
 > **Note:** The VM extension was removed from the template. CS 1.6 is NOT installed automatically. You must run the setup script manually after the VM is created (see step 4).
 
 ### 4. Install CS 1.6 (manual)
 
-SSH into the VM using the IP printed at the end of the deployment:
+## Quick Installation
+
+After VM deployment, SSH in and run:
 
 ```bash
-ssh cs-server@<PUBLIC_IP>
-```
-
-Download and run the setup script:
-
-```bash
-curl -o cs16-setup.sh https://raw.githubusercontent.com/gomezgaona/cs16-iac/main/cs16-setup.sh
+wget https://raw.githubusercontent.com/gomezgaona/cs16-iac/main/cs16-setup.sh
 chmod +x cs16-setup.sh
-sudo bash cs16-setup.sh
+sudo ./cs16-setup.sh
 ```
 
-The script will:
-- Install system dependencies and SteamCMD
-- Download and install the CS 1.6 dedicated server (~1 GB)
-- Clone this repository and copy all configs, maps, and textures
-- Create all management commands in `/usr/local/bin/`
-
-Installation takes approximately 10-15 minutes depending on network speed.
+This installs CS 1.6, pulls configs from GitHub, and sets up all management scripts.
 
 ### 5. Start the server
 
