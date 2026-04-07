@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "value": "southcentralus"  // Changed from "eastus2"
+      "value": "southcentralus"
     },
     "adminUsername": {
       "value": "cs-server"

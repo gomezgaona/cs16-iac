@@ -6,7 +6,7 @@ param(
     [string]$ResourceGroupName = "cs16-server-rg",
     
     [Parameter(Mandatory=$false)]
-    [string]$Location = "eastus2"
+    [string]$Location = "southcentralus"
 )
 
 Write-Host "CS 1.6 Server - Infrastructure as Code Deployment" -ForegroundColor Green
@@ -48,5 +48,6 @@ Write-Host "VM Public IPv6: $($deployment.Outputs.vmPublicIPv6.Value)" -Foregrou
 Write-Host "Storage Account: $($deployment.Outputs.storageAccountName.Value)" -ForegroundColor White
 Write-Host "SSH Command: $($deployment.Outputs.sshCommand.Value)" -ForegroundColor White
 Write-Host ""
-Write-Host "Server is installing CS 1.6 (takes 5-10 minutes)" -ForegroundColor Yellow
-Write-Host "Wait a few minutes, then SSH in and run: cs16-start" -ForegroundColor Yellow
+Write-Host "VM extension removed - manual installation required." -ForegroundColor Yellow
+Write-Host "SSH into the server and run: sudo bash cs16-setup.sh" -ForegroundColor Yellow
+Write-Host "Then start the server with: cs16-start" -ForegroundColor Yellow

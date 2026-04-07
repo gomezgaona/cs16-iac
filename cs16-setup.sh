@@ -32,7 +32,7 @@ echo "Installing CS 1.6 Dedicated Server (this takes 5-10 minutes)..."
 # Clone configuration repository
 echo "Cloning configuration from GitHub..."
 cd /tmp
-git clone https://github.com/jgomezg/cs16-iac.git
+git clone https://github.com/gomezgaona/cs16-iac.git
 cd cs16-iac
 
 # Copy server.cfg if it exists
@@ -217,7 +217,7 @@ cat > /usr/local/bin/cs16-update-configs << 'UPDATEEOF'
 echo "Updating configs from GitHub..."
 cd /tmp
 rm -rf cs16-iac
-git clone https://github.com/jgomezg/cs16-iac.git
+git clone https://github.com/gomezgaona/cs16-iac.git
 cd cs16-iac
 
 # Stop server before updating

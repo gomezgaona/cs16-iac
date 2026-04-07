@@ -211,11 +211,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
     }
     storageProfile: {
       imageReference: {
-	  publisher: 'Canonical'
-	  offer: 'ubuntu-24_04-lts'
-	  sku: 'server'
-	  version: 'latest'
-	}
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-jammy'
+        sku: '22_04-lts-gen2'
+        version: 'latest'
+      }
       osDisk: {
         createOption: 'FromImage'
         diskSizeGB: osDiskSizeGB
@@ -235,23 +235,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
 }
 
 // VM Extension for initial setup
-resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-03-01' = {
-  parent: vm
-  name: 'cs16-setup'
-  location: location
-  properties: {
-    publisher: 'Microsoft.Azure.Extensions'
-    type: 'CustomScript'
-    typeHandlerVersion: '2.1'
-    autoUpgradeMinorVersion: true
-    protectedSettings: {
-      fileUris: [
-        'https://raw.githubusercontent.com/jgomezg/cs16-iac/main/cs16-setup.sh'
-      ]
-      commandToExecute: 'bash cs16-setup.sh'
-    }
-  }
-}
+
 
 output vmPublicIPv4 string = publicIPv4.properties.ipAddress
 output vmPublicIPv6 string = publicIPv6.properties.ipAddress
